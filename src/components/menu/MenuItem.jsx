@@ -6,12 +6,12 @@ import { addItem } from "../cart/cartSlice";
 export default function MenuItem({ menuItemData }) {
   const dispatch = useDispatch();
   const { id, imageUrl, ingredients, name, soldOut, unitPrice } = menuItemData;
-  const unitPrize = unitPrice;
+  const unitPrize = unitPrice * 30;
 
   function handleAddCart(e) {
     e.preventDefault();
     const addCart = {
-      pizaaId: id,
+      pizzaId: id,
       name: name,
       quantity: 1,
       unitPrice: unitPrize,

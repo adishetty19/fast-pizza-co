@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import Button from "../../ui/Button/Button";
 import { getCart } from "../cart/cartSlice";
+import { useState } from "react";
 import { Form, redirect } from "react-router";
 import { createOrder } from "../../services/apiRestaurent";
-import { useState } from "react";
 
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
@@ -12,16 +12,15 @@ const isValidPhone = (str) =>
 
 export default function CreateOrder() {
   const cart = useSelector(getCart);
-  const [priority, setPriority] = useState(false);
-
   console.log(cart);
+
+  const [priority, setPriority] = useState(false);
 
   return (
     <div className="px-4 py-6 font-mono">
       <h2 className="mb-8 text-xl font-bold">Ready to order? Let's go!</h2>
 
-      <Form method="post">
-        {/* First Name */}
+      <Form method="POST">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40" htmlFor="firstName">
             First Name
@@ -35,7 +34,6 @@ export default function CreateOrder() {
           />
         </div>
 
-        {/* Phone Number */}
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40" htmlFor="phone">
             Phone number
@@ -81,7 +79,7 @@ export default function CreateOrder() {
             checked={priority}
           />
           <label className="font-mono" htmlFor="priority">
-            Want to yo give your order priority?
+            Want to give your order priority?
           </label>
         </div>
 
@@ -92,4 +90,18 @@ export default function CreateOrder() {
       </Form>
     </div>
   );
+}
+
+export async function action({ request }) {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
+  const newOrder = {
+    ...data,
+    priority: data.priority === "on",
+    cart: JSON.parse(data.cart),
+  };
+  console.log(newOrder);
+  const order = await createOrder(newOrder);
+  console.log(order.data.id);
+  return redirect(`/order/${order.data.id}`);
 }
