@@ -1,3 +1,5 @@
+// Test ID: IIDSAT
+
 const order = {
   id: "ABCDEF",
   customer: "Aditya",
@@ -45,23 +47,35 @@ export default function Order() {
   } = order;
 
   const deliveryIn = estimatedDelivery;
+
+  return (
+    <div className="space-y-8 px-4 py-6">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-xl font-semibold">Order #{id} status</h2>
+      </div>
+
+      <div className="space-x-2">
+        <span className="rounded-full bg-red-500 px-3 py-1 text-sm font-semibold uppercase tracking-wide text-red-50">
+          Priority
+        </span>
+        <span className="rounded-full bg-green-500 px-3 py-1 text-sm font-semibold uppercase tracking-wide text-green-50">
+          order
+        </span>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-200 px-6 py-5">
+        <p className="font-medium">Only estimated minutes left 😃</p>
+        <p className="font-medium">Order should have arrived</p>
+        <p className="text-xs text-stone-500">
+          Esitmated delivery: estimatedDelivery
+        </p>
+      </div>
+
+      <div lassName="space-y-2 bg-stone-200 px-6 py-5">
+        <p className="text-sm font-medium text-stone-600">Price pizza: </p>
+        <p className="text-sm font-medium text-stone-600">Price priority: </p>
+        <p className="font-bold">To pay on delivery: </p>
+      </div>
+    </div>
+  );
 }
-
-return (
-  <div>
-    <div>
-      <h2>status</h2>
-    </div>
-
-    <div>
-      <span>Priority</span>
-      <span>order</span>
-    </div>
-
-    <div>
-      <p>Only estimated minutes left 😃</p>
-      <p>Order should have arrived</p>
-      <p>Esitmated delivery: estimatedDelivery</p>
-    </div>
-  </div>
-);
