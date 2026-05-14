@@ -1,8 +1,18 @@
-import { Outlet } from "react-router";
+import { Outlet, useNavigation } from "react-router";
 import CartOverview from "../../components/cart/CartOverview";
 import Header from "../Header/Header";
+import Loader from "../Loader/Loader";
+import { useSelector } from "react-redux";
+import { getQuantity } from "../../components/cart/cartSlice";
 
 export default function AppLayout() {
+  const navigation = useNavigation();
+  const quantity = useSelector(getQuantity);
+
+  if (navigation.state === "loading") {
+    return <Loader />;
+  }
+
   return (
     <div className="grid h-screen grid-rows-[auto_1fr_auto]">
       <Header />
@@ -13,7 +23,7 @@ export default function AppLayout() {
         </main>
       </div>
 
-      <CartOverview />
+      {quantity > 0 && <CartOverview />}
     </div>
   );
 }

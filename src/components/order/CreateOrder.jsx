@@ -1,42 +1,26 @@
+import { useSelector } from "react-redux";
 import Button from "../../ui/Button/Button";
+import { getCart } from "../cart/cartSlice";
+import { Form, redirect } from "react-router";
+import { createOrder } from "../../services/apiRestaurent";
+import { useState } from "react";
 
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
     str,
   );
 
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 360,
-    totalPrice: 720,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 280,
-    totalPrice: 280,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 320,
-    totalPrice: 320,
-  },
-];
-
 export default function CreateOrder() {
-  const cart = fakeCart;
+  const cart = useSelector(getCart);
+  const [priority, setPriority] = useState(false);
+
+  console.log(cart);
 
   return (
     <div className="px-4 py-6 font-mono">
       <h2 className="mb-8 text-xl font-bold">Ready to order? Let's go!</h2>
 
-      <form>
+      <Form method="post">
         {/* First Name */}
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40" htmlFor="firstName">
@@ -45,7 +29,7 @@ export default function CreateOrder() {
           <input
             className="w-full rounded-full border border-stone-200 bg-white px-4 py-3 text-sm font-mono focus:outline-none focus:ring focus:ring-yellow-400 sm:grow"
             type="text"
-            name="firstName"
+            name="customer"
             id="firstName"
             required
           />
@@ -77,12 +61,12 @@ export default function CreateOrder() {
               id="address"
               required
             />
-            <button
+            {/* <button
               type="button"
               className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-yellow-400 px-4 py-2 text-xs font-semibold font-mono uppercase tracking-wide text-stone-800 hover:bg-yellow-300"
             >
               Get Position
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -93,6 +77,8 @@ export default function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
+            onChange={() => setPriority((state) => !state)}
+            checked={priority}
           />
           <label className="font-mono" htmlFor="priority">
             Want to yo give your order priority?
@@ -103,7 +89,7 @@ export default function CreateOrder() {
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <Button type="primary">Order now </Button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 }
