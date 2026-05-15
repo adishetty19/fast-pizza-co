@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import Button from "../../ui/Button/Button";
 import { getCart } from "../cart/cartSlice";
 import { useState } from "react";
-import { Form, redirect } from "react-router";
+import { Form, redirect, useNavigation } from "react-router";
 import { createOrder } from "../../services/apiRestaurent";
 
 const isValidPhone = (str) =>
@@ -13,6 +13,8 @@ const isValidPhone = (str) =>
 export default function CreateOrder() {
   const cart = useSelector(getCart);
   console.log(cart);
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
 
   const [priority, setPriority] = useState(false);
 
@@ -85,7 +87,9 @@ export default function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <Button type="primary">Order now </Button>
+          <Button type="primary">
+            {isLoading ? "Preparing order..." : "Order now"}
+          </Button>
         </div>
       </Form>
     </div>

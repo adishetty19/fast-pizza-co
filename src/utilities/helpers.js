@@ -11,11 +11,11 @@ export function formatDate(dateStr) {
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(dateStr);
+  }).format(new Date(dateStr));
 }
 
 export function calcMinutesLeft(dateStr) {
-  const d1 = new Date().getDate();
-  const d2 = new Date().getDate(dateStr);
+  const d1 = new Date().getTime();
+  const d2 = new Date().getTime(dateStr);
   return Math.round((d2 - d1) / 60000);
 }

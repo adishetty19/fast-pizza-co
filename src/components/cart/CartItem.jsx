@@ -1,17 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
-import Button from "../../ui/Button/Button";
+import { useSelector } from "react-redux";
 import { formatCurrency } from "../../utilities/helpers";
-import { deleteItem, getQuantity } from "./cartSlice";
-import EmptyCart from "./EmptyCart";
+import DeleteItem from "./DeleteItem";
+import UpdateQuantity from "./UpdateQuantity";
+import { getQuantityId } from "./cartSlice";
 
 export default function CartItem({ cartDataItem }) {
-  const dispatch = useDispatch();
   const { pizzaId, name, quantity, totalPrice } = cartDataItem;
-
-  function handleDeleteCart(e) {
-    e.preventDefault();
-    dispatch(deleteItem(pizzaId));
-  }
+  const quantityId = useSelector(getQuantityId(pizzaId));
 
   return (
     <li className="py-3 sm:flex sm:items-center sm:justify-between">
@@ -20,9 +15,8 @@ export default function CartItem({ cartDataItem }) {
       </p>
       <div className="flex items-center justify-between sm:gap-6">
         <p className="text-sm font-bold">{formatCurrency(totalPrice)}</p>
-        <Button type="small" onClick={handleDeleteCart}>
-          Delete
-        </Button>
+        <UpdateQuantity pizzaId={pizzaId} quantity={quantityId} />
+        <DeleteItem pizzaId={pizzaId} />
       </div>
     </li>
   );

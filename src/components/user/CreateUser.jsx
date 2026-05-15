@@ -1,11 +1,12 @@
 import { useState } from "react";
 import Button from "../../ui/Button/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { updateUserName } from "./userSlice";
 
 export default function CreateUser() {
   const [username, setUsername] = useState("");
+  const name = useSelector((state) => state.user.userName);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -33,6 +34,11 @@ export default function CreateUser() {
       {username && (
         <div>
           <Button type="primary">Start ordering</Button>
+        </div>
+      )}
+      {name && (
+        <div>
+          <Button type="primary">Continue ordering, {name}</Button>
         </div>
       )}
     </form>
