@@ -21,6 +21,7 @@ export default function CreateOrder() {
 
   const [priority, setPriority] = useState(false);
   const totalPrice = useSelector(getTotalPrice);
+  const name = useSelector((state) => state.user.userName);
 
   return (
     <div className="px-4 py-6 font-mono">
@@ -36,6 +37,7 @@ export default function CreateOrder() {
             type="text"
             name="customer"
             id="firstName"
+            value={name}
             required
           />
         </div>
