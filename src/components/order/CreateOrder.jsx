@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
 import Button from "../../ui/Button/Button";
-import { getCart } from "../cart/cartSlice";
+import { getCart, getTotalPrice } from "../cart/cartSlice";
 import { useState } from "react";
-import { Form, redirect, useNavigation } from "react-router";
+import { Form, redirect, useActionData, useNavigation } from "react-router";
 import { createOrder } from "../../services/apiRestaurent";
+import { formatCurrency } from "../../utilities/helpers";
 
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
@@ -14,9 +15,11 @@ export default function CreateOrder() {
   const cart = useSelector(getCart);
   console.log(cart);
   const navigation = useNavigation();
-  const isLoading = navigation.state === "loading";
+  const errors = useActionData();
+  const isSubmitting = navigation.state === "submitting";
 
   const [priority, setPriority] = useState(false);
+  const totalPrice = useSelector(getTotalPrice);
 
   return (
     <div className="px-4 py-6 font-mono">
@@ -47,6 +50,11 @@ export default function CreateOrder() {
             id="phone"
             required
           />
+          {errors?.phone && (
+            <p className="mt-2 rounded-md bg-red-100 p-2 text-xs text-red-700">
+              {errors.phone}
+            </p>
+          )}
         </div>
 
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -88,7 +96,9 @@ export default function CreateOrder() {
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <Button type="primary">
-            {isLoading ? "Preparing order..." : "Order now"}
+            {isSubmitting
+              ? "Preparing order..."
+              : `Order now from ${formatCurrency(totalPrice)}`}
           </Button>
         </div>
       </Form>
@@ -99,12 +109,19 @@ export default function CreateOrder() {
 export async function action({ request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
+
+  const errors = {};
+  if (!isValidPhone(data.phone))
+    errors.phone = "Please give us a valid phone number 📞";
+  if (Object.keys(errors).length > 0) return errors;
+
   const newOrder = {
     ...data,
     priority: data.priority === "on",
     cart: JSON.parse(data.cart),
   };
   console.log(newOrder);
+
   const order = await createOrder(newOrder);
   console.log(order.data.id);
   return redirect(`/order/${order.data.id}`);

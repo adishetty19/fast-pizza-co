@@ -5,7 +5,6 @@ import {
   formatCurrency,
   formatDate,
 } from "../../utilities/helpers";
-import CartItem from "../cart/CartItem";
 import OrderItem from "./OrderItem";
 
 export default function Order() {
@@ -23,6 +22,13 @@ export default function Order() {
   console.log(orderData.data);
 
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
+  const priorityDate = priority
+    ? new Date(
+        new Date(estimatedDelivery).getTime() - deliveryIn * 0.4 * 60000,
+      ).toISOString()
+    : estimatedDelivery;
+  const displayDelivery = priority ? priorityDate : estimatedDelivery;
+  const displayMinutes = priority ? Math.round(deliveryIn * 0.6) : deliveryIn;
 
   return (
     <div className="space-y-8 px-4 py-6">
@@ -43,13 +49,13 @@ export default function Order() {
 
       <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-200 px-6 py-5">
         <p className="font-medium">
-          {deliveryIn > 0
-            ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
+          {displayMinutes > 0
+            ? `Only ${displayMinutes} minutes left 😃`
             : `Order should have arrived`}
         </p>
 
         <p className="text-xs text-stone-500">
-          (Estimated delivery: {formatDate(estimatedDelivery)})
+          (Estimated delivery: {formatDate(displayDelivery)})
         </p>
       </div>
 
