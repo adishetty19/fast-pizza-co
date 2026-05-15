@@ -5,11 +5,20 @@ import {
   formatCurrency,
   formatDate,
 } from "../../utilities/helpers";
+import CartItem from "../cart/CartItem";
+import OrderItem from "./OrderItem";
 
 export default function Order() {
   const orderData = useLoaderData();
-  const { estimatedDelivery, id, priority, status, orderPrice, priorityPrice } =
-    orderData.data;
+  const {
+    estimatedDelivery,
+    id,
+    priority,
+    status,
+    orderPrice,
+    priorityPrice,
+    cart,
+  } = orderData.data;
 
   console.log(orderData.data);
 
@@ -34,17 +43,24 @@ export default function Order() {
 
       <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-200 px-6 py-5">
         <p className="font-medium">
-          {deliveryIn >= 0
+          {deliveryIn > 0
             ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
             : `Order should have arrived`}
         </p>
 
         <p className="text-xs text-stone-500">
-          (Estimated delivery: {deliveryIn})
+          (Estimated delivery: {formatDate(estimatedDelivery)})
         </p>
       </div>
 
-      <ul className="divide-stone-200 divide-y border-b border-t"></ul>
+      <ul className="divide-stone-200 divide-y border-b border-t">
+        {cart.map((orderDataItem) => (
+          <OrderItem
+            key={orderDataItem.pizzaId}
+            orderDataItem={orderDataItem}
+          />
+        ))}
+      </ul>
 
       <div className="space-y-2 bg-stone-200 px-6 py-5">
         <p className="text-sm font-medium text-stone-600">
